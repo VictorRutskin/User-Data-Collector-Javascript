@@ -1,6 +1,7 @@
+// Set Dataset
 let DataOnUser =[];
 
-//ip getter  
+// Get IP Data 
 fetch('http://ip-api.com/json')
   .then(response => response.json())
   .then(data => {
@@ -11,6 +12,7 @@ fetch('http://ip-api.com/json')
 // Get language of the person visiting the website 
 let language = navigator.language;
 DataOnUser.push("Language: " + language);
+
 // Get browser of the person visiting the website
 let browser = navigator.userAgent;
 DataOnUser.push("Browser: " + browser);
@@ -31,14 +33,6 @@ DataOnUser.push("Visit Time: " + time);
 let screenResolution = `${screen.width}x${screen.height}`;
 DataOnUser.push("Screen Resolution: " + screenResolution);
 
-// Get geolocation  //DOESNT WORK?
-navigator.geolocation.getCurrentPosition(function(position) {
-  let latitude = position.coords.latitude;
-  let longitude = position.coords.longitude;
-  DataOnUser.push(latitude);
-  DataOnUser.push(longitude);
-});
-
 // Get Cookies
 let cookies = document.cookie;
 DataOnUser.push("Cookies: " + cookies);
@@ -54,5 +48,32 @@ DataOnUser.push("Request Path: " + path);
 // Get request parameters
 let parameters = window.location.search;
 DataOnUser.push("Request Parameters: " + parameters);
-
 console.log(DataOnUser);
+
+// Get geolocation 
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    DataOnUser.push(latitude);
+    DataOnUser.push(longitude);
+  },
+  function(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            console.log("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            console.log("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            console.log("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            console.log("An unknown error occurred.");
+            break;
+    }
+  });
+} else {
+  console.log("Geolocation is not supported by this browser.");
+}
